@@ -21,7 +21,7 @@ import json
 import subprocess
 from copy import deepcopy
 
-from fabric.api import settings, hide, env, sudo, put
+from fabric.api import settings, hide, env, sudo, put, run
 from fabric.contrib.files import exists
 from fabric.utils import abort
 from fabric.contrib.project import rsync_project
@@ -449,6 +449,7 @@ def _configure_node():
         print("Executing Chef Solo with the following command:\n"
               "{0}".format(cmd))
     with settings(hide('warnings', 'running'), warn_only=True):
+        run('if which rvm > /dev/null; then rvm use system; fi')
         output = sudo(cmd)
     if (output.failed or "FATAL: Stacktrace dumped" in output or
             ("Chef Run complete" not in output and
